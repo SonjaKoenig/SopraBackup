@@ -1,0 +1,216 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphicx}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage[ngerman]{babel}
+\usepackage[ansinew]{inputenc}
+\usepackage{fixltx2e}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{amsthm}
+\usepackage{cite}
+%\usepackage{multirow}
+\geometry{a4paper,left=30mm,right=30mm, top=3cm, bottom=3cm}
+\newcommand{\result}[1]{\underline{\underline{#1}}}
+%\usepackage{mathtools}
+%\usepackage{dingbat}
+%\usepackage{bbding}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\varrule}[2]{#1& $\longrightarrow$ & #2\\}
+\newcommand{\predic}[2]{\mbox{\textit{#1}}(\mbox{\textit{#2}})}
+
+\title{Methodenbeschreibung}
+\author{Team 31 \& Team 16}
+
+\begin{document}
+
+\maketitle
+
+\section{Allgemein}
+	Für jedes \texttt{private} Attribut gibt es falls nötig eine Methode \texttt{get()} und \texttt{set(...)}, 
+	welche der Übersicht und Offensichtlichkeit ihrer Funktion nicht weiter aufgeführt werden.
+\section{Methodenbeschreibung}
+
+%=============================================================
+	\subsection{Modulhandbuch}
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void ModulInModulhandbuchAufnehmen(Modul aufzunehmendes)}\\
+			BESCHREIBUNG \>Fügt \texttt{aufzunehmendes} zum Modulhandbuch hinzu.\\
+		\end{tabbing}
+		
+	%=============================================================
+	\subsection{Dokument}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void DokumentAnzeigen()}\\
+			BESCHREIBUNG \>Das Dokument wird im Webbrowser angezeigt. Speichern und Drucken dank PDF-Reader.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void DokumentHerunterladen()}\\
+			BESCHREIBUNG \>Lädt Dokument als PDF herunter. Der PDF-Reader liefert Möglichkeit zum Drucken und Speichern.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void DokumentDrucken()}\\
+			BESCHREIBUNG \>Der Druckdialog für das zu Grunde liegende Dokument wird angezeigt.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void DokumentLoeschen()}\\
+			BESCHREIBUNG \>Löscht Dokument aus der Datenbank, wenn es veraltet ist.\\
+		\end{tabbing}
+		
+	%=============================================================
+	\subsection{Modul}	
+	
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public static Modul ModulErstellen(string beschreibung)}\\
+			BESCHREIBUNG \>Erstellt neues Modul mit Titel \texttt{beschreibung} und gibt es zurück.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void ModulAendern(String beschreibung)}\\
+			BESCHREIBUNG \>Setzt Modulbeschreibung neu.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void ModulWeiterleiten()}\\
+			BESCHREIBUNG \>Legt dem Koordinator Modul zur Prüfung vor.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void ModulVeroeffentlichen()}\\
+			BESCHREIBUNG \>Setzt \texttt{status} auf öffentlich.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void ModulAblehnen()}\\
+			BESCHREIBUNG \>Setzt \texttt{status} auf abgelehnt.\\
+		\end{tabbing}
+		
+	%=============================================================
+	\subsection{Benutzer}
+	
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void EmailVersenden(Benutzer empfaenger, String text)}\\
+			BESCHREIBUNG \>Sendet eine Nachricht mit Inhalt \texttt{text} an \texttt{empfaenger}.\\
+		\end{tabbing}
+	
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void JobsAbfragen()}\\
+			BESCHREIBUNG \>Listet zu erledigende Aufgaben auf.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void JobErledigen(int jobID)}\\
+			BESCHREIBUNG \>Set status von des Jobs mit übergebener \texttt{jobID} auf erledigt.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void StellvertreterAendern(Benutzer neuerStellvertreter)}\\
+			BESCHREIBUNG \>Ändert Stellvertreter auf \texttt{neuerStellvertreter}.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void AccouteinstellungenAendern()}\\
+			BESCHREIBUNG \>Eröffnet Möglichkeit zum Ändern der Accounteinstellungen.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public static Benutzer Login(String benutzername, String passwort)}\\
+			BESCHREIBUNG \>Sucht entsprechenden Nutzer aus der DB, prüft das Passwort und gibt den Nutzer zurück.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public static void Registrieren(Benutzer neuerNutzer)}\\
+			BESCHREIBUNG \>Antrag auf Registration für Nutzer \texttt{neuerNutzer}.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public Benutzer BenutzerAbrufen()}\\
+			BESCHREIBUNG \>Gibt diesen Nutzer zurück.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void BenutzerLoeschen()}\\
+			BESCHREIBUNG \>Löscht diesen Nutzer.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void BenutzerSperren()}\\
+			BESCHREIBUNG \>Deaktiviert diesen Nutzer.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void BenutzerEntsperren()}\\
+			BESCHREIBUNG \>Aktiviert diesen Nutzer.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void BenutzerHinzufuegen()}\\
+			BESCHREIBUNG \>Fügt diesen Nutzer der DB hinzu.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void PasswortZuruecksetzen()}\\
+			BESCHREIBUNG \>Setz das Passwort auf ein zufälliges Passwort und schickt e-Mail an Nutzer.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void RolleAendern(Rolle neueRolle)}\\
+			BESCHREIBUNG \>Setzt Rolle des Nutzers auf \texttt{neueRolle}.\\
+		\end{tabbing}
+		
+	%=============================================================	
+	\subsection{Archiv}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void EmailVersenden(Benutzer empfaenger, String text)}\\
+			BESCHREIBUNG \>Sendet eine Nachricht mit Inhalt \texttt{text} an \texttt{empfaenger}.\\
+		\end{tabbing}
+		
+	%=============================================================
+	\subsection{Kalender}
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public List<Kalendereintrag> KalenderAbrufen(Date datum)}\\
+			BESCHREIBUNG \>Ruft zu erledigende Aufgaben für den Monat nach \texttt{datum} auf.\\
+		\end{tabbing}
+		
+		\begin{tabbing}
+			................................. \= . \kill
+			METHODE \>\texttt{public void KalendereintragHinzufuegen(Kalendereintrag neuerEintrag)}\\
+			BESCHREIBUNG \>Fügt \texttt{neuerEintrag} dem Kalender hinzu.\\
+		\end{tabbing}
+
+\end{document}

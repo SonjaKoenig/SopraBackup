@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Microsoft.AspNet.Membership.OpenAuth;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Net.Mail;
+
+
+
+namespace ModulManagementSystem.Account
+{
+    public partial class Register : Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            //RegisterUser.ContinueDestinationPageUrl = Request.QueryString["ReturnUrl"];
+        }
+
+        protected void RegisterUser_CreatedUser(object sender, EventArgs e)
+        {
+            FormsAuthentication.SetAuthCookie(RegisterUser.UserName, createPersistentCookie: false);
+
+            string continueUrl = RegisterUser.ContinueDestinationPageUrl;
+            if (!OpenAuth.IsLocalUrl(continueUrl))
+            {
+                continueUrl = "~/Pages/Default.aspx";
+            }
+            Response.Redirect("~/Pages/Default.aspx");
+        }
+
+        protected void Register_Click(object sender, EventArgs e)
+        {
+            
+
+            SmtpClient smtpClient = new SmtpClient();
+            MailMessage message = new MailMessage("christian.brenner@uni-ulm.de", RegisterUser.Email);
+            DropDownList roleList = (DropDownList)RegisterUser.CreateUserStep.ContentTemplateContainer.FindControl("DropDownList1");
+
+
+            // You can specify the host name or ipaddress of your server
+            // Default in IIS will be localhost 
+            smtpClient.Host = "localhost";
+
+            message.Subject = "Sie wollen einen MMS Account registrieren lassen";
+            message.Body = "Hallo" + RegisterUser.UserName + ". In kürze erhalten Sie eine Bestätigung vom Admin.";
+
+
+            //message.To.Add("christian.brenner@uni-ulm.de");
+            //message.Body = "Registrierung eines Accounts";
+            //message.Body = RegisterUser.UserName + " möchte sich registrieren lassen. Gewählte Rolle: " + roleList.ToString();
+
+            //Body can be Html or text format
+            //Specify true if it  is html message
+            message.IsBodyHtml = true;
+
+            // Send SMTP mail
+            smtpClient.Send(message);
+
+           
+
+            if (Membership.GetUser(RegisterUser.UserName) == null)
+            {
+                Membership.CreateUser(RegisterUser.UserName, RegisterUser.Password, RegisterUser.Email);
+                //  Roles.AddUserToRole(RegisterUser.UserName, "User");
+
+            }
+            Response.Redirect("~/Pages/Default.aspx");
+<<<<<<< HEAD
+    }
+=======
+            try
+            {
+                MailAddress fromAddress = new MailAddress(RegisterUser.UserName, RegisterUser.Email);
+
+                // You can specify the host name or ipaddress of your server
+                // Default in IIS will be localhost 
+                smtpClient.Host = "localhost";
+>>>>>>> ca8950955d9ca63c7b684c7dcebe3f1657fd1ac6
+
+
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        /// <summary>
+        /// Sendning Mail after registration
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void RegisterUser_SendingMail(object sender, MailMessageEventArgs e)
+        {
+            
+
+            //e.Message.To.Add(RegisterUser.Email);
+            //e.Message.Subject = "New user on Web site.";
+            //// Replace placeholder text in message body with information 
+            //// provided by the user.
+
+
+            //    // To address collection of MailAddress
+               
+            //    e.Message.To.Add("christian.brenner@uni-ulm.de");
+            //    e.Message.Body = "Registrierung eines Accounts";
+            //    e.Message.Body = RegisterUser.UserName + " möchte sich als"+ roleList.ToString()  +"registrieren lassen";
+
+            //    //Body can be Html or text format
+            //    //Specify true if it  is html message
+            //    e.Message.IsBodyHtml = false;
+
+            }
+
+      }
+
+}
+

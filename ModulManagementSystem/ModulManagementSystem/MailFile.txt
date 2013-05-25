@@ -1,0 +1,11 @@
+Hallo <%UserName%>,
+
+in kürze erhalten Sie eine Bestätigungnachricht vom Admin.
+
+     Ihr Username ist:   <%UserName%>
+	 
+	 Mit freundlichem Gruß
+	 
+	 Modul Management System
+	 
+	 Die ist eine automatisch enerierte Mail, antworten zwecklos.

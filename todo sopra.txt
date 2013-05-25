@@ -1,0 +1,28 @@
+-kommentarfeld bei modul kontrollieren
+-kommentarfeld freigabeberechtigter bei modul kontrollieren
+-eigene seite für job anzeige - kommentare von freigabeberechtigter & koordinator müssen angezeigt werden und bearbeitung eines moduls muss möglich sein
+
+-Manuel: -logik aus gui nehmen
+	 -methoden mit 7 parametern refactoren
+- label mit modul erstellt auf default seite bzw. popup
+-slidebar bei angemeldetem user überarbeiten
+- modul erst nach freigabe in tree und suche
+-modul erstellen --> credit points integer,..
+- kontrolle auf freigabe und nur freigegeben in suche und tree
+
+Funktionen: alle module zu semester zurückgegeben 
+
+Code Review und Tests mit dem Review Excelsheet
+
+Pflichtenheft stunden eintragen
+
+- admin funktionen:
+	- modul direkt erstellen
+	- modul punkte hinzufügen und ändern und löschen
+	-aus rollen eine klasse machen
+
+Sopra abnahme: 01.07
+tutor treffen: 17.06
+-admin seite GUI !!
+
+-changelog und versionierung
