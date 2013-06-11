@@ -19,6 +19,7 @@ namespace ModulManagementSystem
         private ArchiveLogic logic = new ArchiveLogic();
         private bool needToLoadXmlTree = true;
         private JobLogic jobLogic = new JobLogic();
+        private PDFHandler pdf = new PDFHandler();
  
 
         protected void Page_Load(object sender, EventArgs e)
@@ -86,14 +87,17 @@ namespace ModulManagementSystem
                         moduls = logic.getAllModulesFromSubject(s.SubjectID);
                         foreach (Modul m in moduls)
                         {
-                            // finde den namen des moduls in der desctription
-                            foreach (ModulPartDescription d in m.Descriptions)
+                            if (m.State.Equals(ModulState.archiviert))
                             {
-                                if (d.Name == GlobalNames.getModulNameText())
+                                // finde den namen des moduls in der desctription
+                                foreach (ModulPartDescription d in m.Descriptions)
                                 {
-                                    el = doc.CreateElement("Modul");
-                                    el.SetAttribute("Heading", d.Description);
-                                    subject.AppendChild(el);
+                                    if (d.Name == GlobalNames.getModulNameText())
+                                    {
+                                        el = doc.CreateElement("Modul");
+                                        el.SetAttribute("Heading", d.Description);
+                                        subject.AppendChild(el);
+                                    }
                                 }
                             }
                         }
@@ -171,7 +175,8 @@ namespace ModulManagementSystem
             {
                 if (s is Modul)
                 {
-                    searchResultList.Items.Add(new ListItem(logic.getNameFromModule((Modul)s) + " - Modul von " + ((Modul)s).Year));
+                    if (((Modul)s).State.Equals(ModulState.archiviert))
+                        searchResultList.Items.Add(new ListItem(logic.getNameFromModule((Modul)s) + " - Modul von " + ((Modul)s).Year));
                 }
                 else if (s is Subject)
                 {
@@ -191,7 +196,6 @@ namespace ModulManagementSystem
         /// <param name="e"></param>
         protected void ModulhandbookTreeView_SelectedNodeChanged(object sender, EventArgs e)
         {
-            PDFHandler pdf = new PDFHandler();
 
             Modulhandbook mhb = logic.getModulhandbookByNameAndSemester(ModulhandbookTreeView.SelectedNode.Text.ToLower(), getSemesterNodeText(ModulhandbookTreeView.SelectedNode));
             Modul module = logic.getModuleByName(ModulhandbookTreeView.SelectedNode.Text.ToLower());
@@ -237,7 +241,7 @@ namespace ModulManagementSystem
             String objName = searchResultList.Items[e.Index].Text;
             
             objName = objName.Remove(objName.LastIndexOf('-') - 1).ToLower();
-            PDFHandler pdf = new PDFHandler();
+           
             Modulhandbook mhb = logic.getModulhandbookByName(objName);
             Modul module = logic.getModuleByNameAttendVersion(objName);
             Subject subj = logic.getSubjectByName(objName);
@@ -259,12 +263,14 @@ namespace ModulManagementSystem
         /// </summary>
         private void MakeLinksVisible()
         {
-            if (HttpContext.Current.User.IsInRole("Modulverantwortlicher"))
+            if (HttpContext.Current.User.IsInRole("Modulverantwortlicher") || HttpContext.Current.User.IsInRole("Administrator"))
             {
                 ModulErstellenLink.Visible = true;
                 ModuleBearbeitenLink.Visible = true;
             }
-            if (HttpContext.Current.User.IsInRole("Freigabeberechtigter") || HttpContext.Current.User.IsInRole("Koordinator"))
+            if (HttpContext.Current.User.IsInRole("Freigabeberechtigter") 
+                || HttpContext.Current.User.IsInRole("Koordinator") 
+                || HttpContext.Current.User.IsInRole("Administrator") )
             {
                 ModuleKontrollierenLink.Visible = true;
             }
@@ -282,6 +288,11 @@ namespace ModulManagementSystem
             Response.Redirect("ModulAuswahl-Koo-Frei.aspx");
         }
 
+        /// <summary>
+        /// created and opens the modules that belongs to the clicked job and redirects the user to the edit module page 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void jobList_Click(object sender, BulletedListEventArgs e)
         {
             String text = jobList.Items[e.Index].Text;

@@ -3,8 +3,8 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <hgroup class="title">
-        <h1 style="color: #3e5667"><%: Title %>.</h1>
-        <h2 style="color: #999">Erstellen Sie mit dem unten stehenden Formular ein neues Konto.</h2>
+        <h1><%: Title %>.</h1>
+        <h2>Erstellen Sie mit dem unten stehenden Formular ein neues Konto.</h2>
     </hgroup>
 
     <div id="register_panel">
@@ -68,13 +68,13 @@
                             </asp:DropDownList>
                             <br />
                             <br />
-                            <asp:Button ID="RegisterButton" runat="server" CommandName="MoveNext" Text="Registrieren" OnClick="Register_Click" AccessKey="S" ToolTip="Einen neuen Account registrieren"/>
-                            <br />
-                            <br />
                             <asp:Label ID="Label2" runat="server" Text="Kommentar:"></asp:Label>
                             <br />
                             <br />
                             <asp:TextBox ID="CommentBox" runat="server" Height="90px" Width="227px"></asp:TextBox>
+                            <br />
+                            <br />
+                             <asp:Button ID="RegisterButton" runat="server" CommandName="MoveNext" Text="Registrieren" OnClick="Register_Click" AccessKey="S" ToolTip="Einen neuen Account registrieren"/>
                             <br />
                             <br />
 

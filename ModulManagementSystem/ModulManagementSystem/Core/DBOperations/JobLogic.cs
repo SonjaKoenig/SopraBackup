@@ -1,4 +1,5 @@
-﻿using ModulManagementSystem.Models;
+﻿
+using ModulManagementSystem.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,10 +9,19 @@ using System.Web.Security;
 
 namespace ModulManagementSystem.Core.DBOperations
 {
+    /// <summary>
+    /// Creater: p streicher
+    /// This class contains all logic for jobs. The jobs are in the database specified for every user.
+    /// </summary>
     public class JobLogic
     {
         private ModulhandbookContext context = new ModulhandbookContext();
 
+        /// <summary>
+        /// get all jobs for the given user
+        /// </summary>
+        /// <param name="user">jobs should belong to the given user</param>
+        /// <returns>returns an empty list if no jobs were found for the given user</returns>
         public List<Job> GetJobListForUser(Guid user)
         {
             DbSet<Job> jobs = context.Jobs;
@@ -28,6 +38,11 @@ namespace ModulManagementSystem.Core.DBOperations
 
         }
 
+        /// <summary>
+        /// returns a job with the given id
+        /// </summary>
+        /// <param name="objId">id to search for</param>
+        /// <returns>the job with the given id or null if no job is found</returns>
         internal Job getJobById(int objId)
         {
             DbSet jobs = context.Jobs;
@@ -41,6 +56,13 @@ namespace ModulManagementSystem.Core.DBOperations
             return null;
         }
 
+        /// <summary>
+        /// creates a job depending on the modulstate and write it into the db 
+        /// </summary>
+        /// <param name="state">modulstate after which the job is created</param>
+        /// <param name="mpdList">needed for job parameters</param>
+        /// <param name="module">needed for the module id</param>
+        /// <param name="user">the job creater</param>
         public void CreateNewJob(ModulState state, List<ModulPartDescription> mpdList, Modul module, Guid user)
         {
             String name = null, text = null;
@@ -54,7 +76,7 @@ namespace ModulManagementSystem.Core.DBOperations
                 MembershipUser Modulverantwortlicher1 = Membership.GetUser("Koordinator");
                 executer = new Guid(Modulverantwortlicher1.ProviderUserKey.ToString());
             }
-            else if (state.Equals(ModulState.waitingForAcceptionFromFreigabeberechtigter))
+            else if (state.Equals(ModulState.waitingForFreigeber))
             {
                 name = "Das Modul " + modulname + " wurde vom Koordinator kontrolliert";
                 text = "Bitte freigeben";

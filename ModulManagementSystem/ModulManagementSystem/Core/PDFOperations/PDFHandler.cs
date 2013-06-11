@@ -1,12 +1,12 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
+using ModulManagementSystem.Core.DBOperations;
 using ModulManagementSystem.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System;
-using ModulManagementSystem.Core.DBOperations;
 
 namespace ModulManagementSystem.Core.PDFOperations
 {
@@ -37,61 +37,106 @@ namespace ModulManagementSystem.Core.PDFOperations
             
         public void CreatePDF(Modul modul, HttpServerUtility server)
         {
-            Modulhandbook modulhandbook = GetModulhandbook(modul);
-            List<ModulPartDescription> modulpartdescriptions = modul.Descriptions.ToList<ModulPartDescription>();
-            
-            ArchiveLogic logic = new ArchiveLogic();
-
+            List<ModulPartDescription> modulpartdescriptions = modul.Descriptions.ToList<ModulPartDescription>();  
             var output = new FileStream(server.MapPath("PDFs/" +logic.getNameFromModule(modul) +".pdf"), FileMode.Create);
             var document = new Document(PageSize.A4, 50, 50, 25, 25);
             var writer = PdfWriter.GetInstance(document, output);
             document.Open();
+            Paragraph p = new Paragraph(logic.getNameFromModule(modul), moduleTitleFont);
+            p.Alignment = 1;
+            document.Add(p);
+           
+            PdfPTable table = new PdfPTable(4);
+            table.TotalWidth = 500f;
+            table.LockedWidth = true;
 
-            //add stuff...
-            try
-            {                
-                Image logo1 = Image.GetInstance(server.MapPath("Images/UniLogo.gif"));
-                logo1.ScaleAbsolute(150, 150);
-                logo1.SetAbsolutePosition(40,675);
-                Image logo2 = Image.GetInstance(server.MapPath("Images/UniTitle.gif"));
-                logo2.ScaleAbsolute(250, 50);
-                logo2.SetAbsolutePosition(300,690);
-                document.Add(logo1);
-                document.Add(logo2);
-                for (int i = 0; i < 8; i++)
-                {
-                    document.Add(new Paragraph(" "));
-                }
-
-                Paragraph p1 = new Paragraph("Universität Ulm",titleFont);
-                
-                document.Add(p1);
-                var p2 = new Paragraph(modulhandbook.Name);
-                document.Add(p2);
-                document.Add(new Paragraph("_________________________________________________________________________"));
-                
-                var p3 = new Paragraph(logic.getNameFromModule(modul), subTitleFont);
-                document.Add(p3);
-                for (int i = 0; i < 2; i++)
-                {
-                    document.Add(new Paragraph(" "));
-                }
-
-                foreach (ModulPartDescription m in modulpartdescriptions)
-                {
-                    document.Add(new Paragraph(" "));
-                    document.Add(new Paragraph("             "+m.Name + "    :    " + m.Description,moduleDescriptionFont));
-                    document.Add(new Paragraph("_________________________________________________________________________"));
-                }
-            }
-            catch (Exception e)
+            table.SpacingBefore = 20f;
+            table.SpacingAfter = 20f;
+            
+            for (int i = 0; i < modul.Descriptions.Count; i++)
             {
-                string itgetused = e.ToString();
+                PdfPCell cell1 = new PdfPCell();
+                PdfPCell cell2 = new PdfPCell();
+                cell1.Colspan = 1;
+                cell2.Colspan = 3;
+                cell1.PaddingLeft = 5;
+                cell1.PaddingBottom = 5;
+                cell1.PaddingTop = 5;
+                cell2.PaddingLeft = 5;
+                cell2.PaddingBottom = 5;
+                cell2.PaddingTop = 5;
+                cell1.Border = 0;
+                cell2.Border = 0;
+
+                cell1.AddElement(new Phrase(modulpartdescriptions[i].Name+":", moduleDescriptionFont));
+                cell2.AddElement(new Phrase(modulpartdescriptions[i].Description, moduleDescriptionFont));
+                if (i % 2 == 0)
+                {
+                    cell1.BackgroundColor = new BaseColor(190, 220, 255, 200);
+                    cell2.BackgroundColor = new BaseColor(190, 220, 255, 200);
+                }
+                else
+                {
+                    cell1.BackgroundColor = new BaseColor(255, 255, 255);
+                    cell2.BackgroundColor = new BaseColor(255, 255, 255);
+                }
+                table.AddCell(cell1);
+                table.AddCell(cell2);
             }
-            finally
+            document.Add(table);
+            document.Close();
+            openPdf(server.MapPath(pdfpath + logic.getNameFromModule(modul) + ".pdf"));
+        }
+        public void CreatePDF(Modul modul,String title, HttpServerUtility server)
+        {
+            List<ModulPartDescription> modulpartdescriptions = modul.Descriptions.ToList<ModulPartDescription>();
+            var output = new FileStream(server.MapPath("PDFs/" + logic.getNameFromModule(modul) + ".pdf"), FileMode.Create);
+            var document = new Document(PageSize.A4, 50, 50, 25, 25);
+            var writer = PdfWriter.GetInstance(document, output);
+            document.Open();
+            Paragraph p = new Paragraph(title, moduleTitleFont);
+            p.Alignment = 1;
+            document.Add(p);
+
+            PdfPTable table = new PdfPTable(4);
+            table.TotalWidth = 500f;
+            table.LockedWidth = true;
+
+            table.SpacingBefore = 20f;
+            table.SpacingAfter = 20f;
+
+            for (int i = 0; i < modul.Descriptions.Count; i++)
             {
-                document.Close();
+                PdfPCell cell1 = new PdfPCell();
+                PdfPCell cell2 = new PdfPCell();
+                cell1.Colspan = 1;
+                cell2.Colspan = 3;
+                cell1.PaddingLeft = 5;
+                cell1.PaddingBottom = 5;
+                cell1.PaddingTop = 5;
+                cell2.PaddingLeft = 5;
+                cell2.PaddingBottom = 5;
+                cell2.PaddingTop = 5;
+                cell1.Border = 0;
+                cell2.Border = 0;
+
+                cell1.AddElement(new Phrase(modulpartdescriptions[i].Name + ":", moduleDescriptionFont));
+                cell2.AddElement(new Phrase(modulpartdescriptions[i].Description, moduleDescriptionFont));
+                if (i % 2 == 0)
+                {
+                    cell1.BackgroundColor = new BaseColor(190, 220, 255, 200);
+                    cell2.BackgroundColor = new BaseColor(190, 220, 255, 200);
+                }
+                else
+                {
+                    cell1.BackgroundColor = new BaseColor(255, 255, 255);
+                    cell2.BackgroundColor = new BaseColor(255, 255, 255);
+                }
+                table.AddCell(cell1);
+                table.AddCell(cell2);
             }
+            document.Add(table);
+            document.Close();
             openPdf(server.MapPath(pdfpath + logic.getNameFromModule(modul) + ".pdf"));
         }
         private Modulhandbook GetModulhandbook(Modul modul)
@@ -130,6 +175,11 @@ namespace ModulManagementSystem.Core.PDFOperations
             openPdf(server.MapPath(pdfpath + modulhandbook.Name + ".pdf"));
         }
 
+        /// <summary>
+        /// Creates and opens a pdf document with the given subject
+        /// </summary>
+        /// <param name="subject">subject to create</param>
+        /// <param name="server"></param>
         public void CreateAndOpenSoubjectPdf(Subject subject, HttpServerUtility server)
         {
             var output = new FileStream(server.MapPath(pdfpath + subject.Name + ".pdf"), FileMode.Create);
@@ -199,10 +249,48 @@ namespace ModulManagementSystem.Core.PDFOperations
             Paragraph p = new Paragraph(subNo.ToString() + "." + modulNo.ToString() + " " + logic.getNameFromModule(m), moduleTitleFont);
             p.Alignment = 1;
             document.Add(p);
+
+            PdfPTable table = new PdfPTable(4);
+            table.TotalWidth = 500f;
+            table.LockedWidth = true;
+
+            table.SpacingBefore = 20f;
+            table.SpacingAfter = 20f;
+
             foreach (ModulPartDescription descr in m.Descriptions)
             {
-                document.Add(new Paragraph(descr.Name + ":\t" + descr.Description, moduleDescriptionFont));
+                PdfPCell cell1 = new PdfPCell();
+                PdfPCell cell2 = new PdfPCell();
+                cell1.Colspan = 1;
+                cell2.Colspan = 3;
+                cell1.PaddingLeft = 5;
+                cell1.PaddingBottom = 5;
+                cell1.PaddingTop = 5;
+                cell2.PaddingLeft = 5;
+                cell2.PaddingBottom = 5;
+                cell2.PaddingTop = 5;
+                cell1.Border = 0;
+                cell2.Border = 0;
+
+                cell1.AddElement(new Phrase(descr.Name + ":", moduleDescriptionFont));
+                cell2.AddElement(new Phrase(descr.Description, moduleDescriptionFont));
+                if (table.Rows.Count % 2 == 0)
+                {
+                    cell1.BackgroundColor = new BaseColor(190, 220, 255, 200);
+                    cell2.BackgroundColor = new BaseColor(190, 220, 255, 200);
+                }
+                else
+                {
+                    cell1.BackgroundColor = new BaseColor(255, 255, 255);
+                    cell2.BackgroundColor = new BaseColor(255, 255, 255);
+                }
+                
+                table.AddCell(cell1);
+                table.AddCell(cell2);
             }
+            document.Add(table);
+        //    document.Add(new Paragraph(descr.Name + ":\t" + descr.Description, moduleDescriptionFont));
+            
             document.NewPage();
         }
 

@@ -142,6 +142,7 @@
     <Content Include="Images\PDF_Icon.png" />
     <Content Include="Images\UniLogo.gif" />
     <Content Include="Images\UniTitle.gif" />
+    <Content Include="Jobs.aspx" />
     <Content Include="MailFile.txt" />
     <Content Include="MailFileToAdmin.txt" />
     <Content Include="About.aspx" />
@@ -276,8 +277,13 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="Core\DBOperations\AdminUtilities.cs" />
+    <Compile Include="Core\DBOperations\UserContainer.cs" />
     <Compile Include="Core\DBOperations\JobLogic.cs" />
     <Compile Include="Core\DBOperations\ContextInterface.cs" />
+    <Compile Include="Core\DifferenceEngine\CharData.cs" />
+    <Compile Include="Core\DifferenceEngine\Comparator.cs" />
+    <Compile Include="Core\DifferenceEngine\Engine.cs" />
+    <Compile Include="Core\DifferenceEngine\Structures.cs" />
     <Compile Include="Core\MailOperations\MailLogic.cs" />
     <Compile Include="Core\PDFOperations\PDFHandler.cs" />
     <Compile Include="About.aspx.cs">
@@ -327,6 +333,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="GlobalNames.cs" />
+    <Compile Include="Jobs.aspx.cs">
+      <DependentUpon>Jobs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Jobs.aspx.designer.cs">
+      <DependentUpon>Jobs.aspx</DependentUpon>
+    </Compile>
     <Compile Include="LayoutMMS.Master.cs">
       <DependentUpon>LayoutMMS.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -384,7 +397,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="Content\App_Data\" />
     <Folder Include="ITextSharp\" />
     <Folder Include="Pages\" />
     <Folder Include="PDFs\" />

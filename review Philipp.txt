@@ -1,0 +1,29 @@
+Klasse: AdminUtilities
+Aufgefallen: 
+getAllUsers: try catch leer ohne fehlerbehandlung
+addUser: doku fehlt
+ResetPassword: was passiert mit dem passwort?
+
+
+Klasse: UserContainer
+RoleFromNumber: Rolenummern nicht sehr übersichtlich
+RoleStrings: sollten vielleicht Konstanten oder ein Enum sein, dann sind die leichter zu ändern
+NoRole: Adminrolle fehlt oder?
+
+Klasse Modulauswahl_Koo_Frei
+Doku
+DrawHeader: Schwerwiegend - Greift direkt auf DB zu durch den Context
+ArchiveLogic als membervariable?
+nothingToDo: eher in die logik
+
+Klasse ModulAuswahl_Modulverantwortlicher
+Doku
+DrawHeader: Schwerwiegend - Greift direkt auf DB zu durch den Context
+ArchiveLogic als membervariable?
+
+Klasse ModulBearbeiten
+Doku
+Page_Load methode relativ groß und unübersichtlich
+GetModulByQuerystring: logik 
+CheckDescriptions: Methode sehr groß, viele return statements
+jumpToDescription: ebenfalls sehr groß

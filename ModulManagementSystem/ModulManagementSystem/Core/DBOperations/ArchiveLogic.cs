@@ -18,15 +18,6 @@ namespace ModulManagementSystem.Core.DBOperations
     {
         private ModulhandbookContext context = new ModulhandbookContext();
 
-        public List<Modul> getAllModulesFromYear(int year)
-        {
-            return null;
-        }
-
-        public List<Modulhandbook> getAllModulHandbooksFromYear(int yeah)
-        {
-            return null;
-        }
         /// <summary>
         /// returns all the modulhandbooks that belong to the given studysubject
         /// </summary>
@@ -47,6 +38,7 @@ namespace ModulManagementSystem.Core.DBOperations
             return resultList;
         }
 
+        //no longer valid
         /// <summary>
         /// returns the modul that matches with the given name from current semester
         /// </summary>
@@ -67,6 +59,11 @@ namespace ModulManagementSystem.Core.DBOperations
             return null;
         }
 
+        /// <summary>
+        /// returns a list of modules which names contain the given string
+        /// </summary>
+        /// <param name="substr">string to search for</param>
+        /// <returns>empty list if nothing is found</returns>
         public List<Modul> getAllModulesThatContainStr(String substr)
         {
             substr = substr.ToLower();
@@ -82,9 +79,9 @@ namespace ModulManagementSystem.Core.DBOperations
             }
             return results;
         }
-        
+ 
         /// <summary>
-        /// returns the modul that matches with the given name and the highest current version. Muss noch bearbeitet werden
+        /// Returns the Modul that matches with the given name and the highest current version of the editable Semester
         /// </summary>
         /// <param name="name">name of the modul</param>
         /// <returns>null if no modul with this name was found</returns>
@@ -92,26 +89,39 @@ namespace ModulManagementSystem.Core.DBOperations
         {
             name = name.ToLower();
             List<Modul> modules=new List<Modul>();
-            DbSet<Modul> mod = context.Modules;
+            List<Modul> mod = getEditableModules();
+
             Modul newest = new Modul() { Version = 0 };
-            
-            foreach (Modul m in mod)
+
+            for (int i = 0; i < mod.Count; i++)
             {
-                foreach (ModulPartDescription d in m.Descriptions)
+                bool reverse = false;
+                for (int j = 0; j < mod[i].Descriptions.Count; j++)
                 {
-                    if (d.Name.Equals(GlobalNames.getModulNameText()) && d.Description.ToLower().Equals(name))
+                    ModulPartDescription mpd = mod[i].Descriptions.ToList()[j];
+                    if (mpd.Name.Equals(GlobalNames.getModulNameText()) && mpd.Description.ToLower().Equals(name))
                     {
-                        if (newest != null && m.Version >= newest.Version)
+                        if ((mod[i].Version > newest.Version)||newest.Version==0)
                         {
-                            newest = m;
-                        }                        
-                    }                        
+                            newest = mod[i];
+                            reverse = true;
+                        }
+                    }
+                }
+                if (reverse)
+                {
+                    i = -1;
                 }
             }
-           
+            
             return newest;
         }
 
+        /// <summary>
+        /// returns all modules from the given subject specified by the ID
+        /// </summary>
+        /// <param name="subjectID">the subject id from which the modules should be returned</param>
+        /// <returns>empty list if nothing is found</returns>
         public List<Modul> getAllModulesFromSubject(int subjectID)
         {
             List<Modul> resultList = new List<Modul>();
@@ -129,6 +139,12 @@ namespace ModulManagementSystem.Core.DBOperations
             return resultList;
         }
 
+
+        /// <summary>
+        /// returns all modules from the given subject specified by the name
+        /// </summary>
+        /// <param name="subjectID">the subject id from which the modules should be returned</param>
+        /// <returns>empty list if nothing is found</returns>
         public List<Modul> getAllModulesFromSubject(String subjectName)
         {
             subjectName = subjectName.ToLower();
@@ -165,6 +181,11 @@ namespace ModulManagementSystem.Core.DBOperations
             return null;
         }
 
+        /// <summary>
+        /// returns all subjects containing the given string in the name
+        /// </summary>
+        /// <param name="substr">string to search for</param>
+        /// <returns>empty list if nothing is found</returns>
         public List<Subject> getAllSubjectsWithNameContainsStr(String substr)
         {
             substr = substr.ToLower();
@@ -180,6 +201,11 @@ namespace ModulManagementSystem.Core.DBOperations
             return results;
         }
 
+        /// <summary>
+        /// returns all subjects from a modulhandbook which is specified by the name
+        /// </summary>
+        /// <param name="name">the name from the modulhandbook</param>
+        /// <returns>null if no modulhandbook with the name is found</returns>
         public List<Subject> getAllSubjectsFromModulhandbook(String name)
         {
             name = name.ToLower();
@@ -249,6 +275,11 @@ namespace ModulManagementSystem.Core.DBOperations
             return null;
         }
 
+        /// <summary>
+        /// returns a list of modulhandbooks containing the given string in the name
+        /// </summary>
+        /// <param name="substr">string to search for</param>
+        /// <returns>empty list if nothing is found</returns>
         public List<Modulhandbook> getAllModulhandbooksWithNameContainsStr(String substr)
         {
             List<Modulhandbook> results = new List<Modulhandbook>();
@@ -313,6 +344,17 @@ namespace ModulManagementSystem.Core.DBOperations
             return toReturn;
         }
 
+        /// <summary>
+        /// This Function creates new Moduls. It's also called in order to 'edit' Moduls or change the Modulstate. Due to the Versionisierung 
+        /// </summary>
+        /// <param name="modulpartdescriptions"></param>
+        /// <param name="state"></param>
+        /// <param name="owner"></param>
+        /// <param name="autor"></param>
+        /// <param name="lastChange"></param>
+        /// <param name="subjects"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public Modul CreateModul(List<ModulPartDescription> modulpartdescriptions, ModulState state, Guid owner,
             Guid autor, DateTime lastChange, List<Subject> subjects, int version)
         {
@@ -326,7 +368,7 @@ namespace ModulManagementSystem.Core.DBOperations
                 Subjects = new List<Subject>(),
                 Descriptions = modulpartdescriptions,
                 Version = version,
-                Year = 0
+                Year = 2012
             };
             foreach (Subject s in mhc.Subjects)
             {
@@ -352,7 +394,7 @@ namespace ModulManagementSystem.Core.DBOperations
             {
                 if (typeof(int).Equals(s))
                 {
-                    results.AddRange(GetAllIntResults(s));
+                    //results.AddRange(GetAllIntResults(s));
                 }
                 else
                 {
@@ -372,7 +414,7 @@ namespace ModulManagementSystem.Core.DBOperations
             return results;
         }
 
-        private List<String> GetAllIntResults(String s)
+        /*private List<String> GetAllIntResults(String s)
         {
             List<String> results = new List<String>();
             
@@ -386,8 +428,13 @@ namespace ModulManagementSystem.Core.DBOperations
             }
 
             return results;
-        }
+        }*/
 
+        /// <summary>
+        /// Returns the Name of a Modul
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         public String getNameFromModule(Modul m)
         {
             foreach (ModulPartDescription d in m.Descriptions)
@@ -407,9 +454,347 @@ namespace ModulManagementSystem.Core.DBOperations
 
         }
 
+        /// <summary>
+        /// Returns a List of all Semesters stored in the Database
+        /// </summary>
+        /// <returns></returns>
         internal List<Semester> getAllSemester()
         {
             return context.Semesters.ToList();
+        }
+
+        /// <summary>
+        /// Returns the next Semester. 
+        /// For Example: returns Wintersemester 2013 if the current Semester is Sommersemester 2013
+        /// </summary>
+        /// <returns></returns>
+        public Semester getEditableSemester()
+        {
+            ModulhandbookContext mhc = new ModulhandbookContext();
+            Semester next = new Semester();
+            DateTime date = DateTime.Now;
+            if (DateTime.Now.Month >= 4 && DateTime.Now.Month < 10)
+            {
+                String compare = "Wintersemester " + DateTime.Now.Year + "/" + (DateTime.Now.Year + 1);
+                next = mhc.Semesters.Where(s => s.Name.Equals(compare)).ToList<Semester>().First();               
+            }
+            else
+            {
+                String compare = "";
+                if (DateTime.Now.Month >= 10)
+                {
+                   
+                    compare = "Sommersemester " + (DateTime.Now.Year + 1);
+                }
+                else
+                {
+                    compare = "Sommersemester " + DateTime.Now.Year;
+                }
+                next = mhc.Semesters.Where(s => s.Name.Equals(compare)).ToList<Semester>().First();
+            }
+            return next;
+        }
+
+        /// <summary>
+        /// Returns a List of Handbooks from the next(ie editable) Semester
+        /// </summary>
+        /// <returns></returns>
+        public List<Modulhandbook> getEditableModulhandbooks()
+        {
+            Semester next=getEditableSemester();
+            return getAllModulhandbooksFromSemester(next.SemesterID);
+        }
+
+        /// <summary>
+        /// Returns a List of Moduls from the next(ie editable) Semester
+        /// </summary>
+        /// <returns></returns>
+        public List<Modul> getEditableModules()
+        {
+            List<Modul> toReturn = new List<Modul>();
+            List<Modulhandbook> books = getEditableModulhandbooks();
+            foreach (Modulhandbook m in books)
+            {
+                List<Subject> subjects = m.Subjects.ToList();
+                foreach (Subject s in subjects)
+                {
+                    toReturn.AddRange(s.Modules);
+                }
+            }
+            return RemoveDoubleModules(toReturn);    
+        }
+        /// <summary>
+        /// Returns the Modules from the corresponding owner 
+        /// </summary>
+        /// <returns></returns>
+        public List<Modul> GetModulsModulverantwortlicher(HttpContext context, Guid owner)
+        {
+            ModulhandbookContext mhc = new ModulhandbookContext();
+            List<Modul> alleditableModules = getEditableModules();
+            List<Modul> highestVersion = new List<Modul>();
+            foreach (Modul m in alleditableModules)
+            {
+                highestVersion.Add(GetHighestModulVersion(m));
+            }
+            highestVersion = RemoveDoubleModules(highestVersion);
+            List<Modul> correctState = new List<Modul>();
+            for (int i = 0; i < highestVersion.Count; i++)
+            {
+                if (highestVersion[i].State != ModulState.archiviert)
+                {
+                    correctState.Add(highestVersion[i]);
+                }
+            }
+            if (context.User.IsInRole("Administrator"))
+            {
+                return correctState;
+            }
+            else
+            {
+                List<Modul> correctOwner = new List<Modul>();
+                for (int i = 0; i < correctState.Count; i++)
+                {
+                    if (correctState[i].Owner==owner)
+                    {
+                        correctOwner.Add(correctState[i]);
+                    }
+                }
+                return correctOwner;
+            }
+
+        }
+
+        public List<Subject> getSubjectstoDisplay(String handbookName)
+        {
+            ModulhandbookContext mhc=new ModulhandbookContext();
+            String s = handbookName;
+            List<Modulhandbook> list = new List<Modulhandbook>();
+            int id;
+            bool isNum = Int32.TryParse(s,out id);
+            if (isNum)
+            {
+                list= mhc.Modulhandbooks.Where(m => m.ModulhandbookID == id).ToList<Modulhandbook>();
+            }
+            else
+            {
+                return new List<Subject>();
+            }
+            return getAllSubjectsFromModulhandbook(list.First().ModulhandbookID);
+        }
+
+
+        /// <summary>
+        /// Returns the highest version of the Module
+        /// </summary>
+        /// <param name="modul">The name of the Module</param>
+        /// <returns></returns>
+        private Modul GetHighestModulVersion(Modul modul)
+        {
+            ModulhandbookContext mhc = new ModulhandbookContext();
+            String Name = getNameFromModule(modul);
+            return getModuleByNameAttendVersion(Name);
+        }
+
+        //----------------------------Koordinator and Freigeber Logic ---------------------------------///
+
+        public List<Modulhandbook> GetModulhandbooksKooFrei(HttpContext context)
+        {
+            List<Modulhandbook> result = new List<Modulhandbook>();
+            List<Subject> subjects = GetSubjectsKooFrei(context);
+            foreach (Subject s in subjects)
+            {
+                result.Add(s.Modulhandbook);
+            }
+            return RemoveDoubleHandbooks(result);         
+        }
+        public List<Subject> GetSubjectsKooFrei(HttpContext context)
+        {
+            List<Subject> result = new List<Subject>();
+            List<Modul> moduls = GetModulsKooFrei(context);
+            foreach (Modul m in moduls)
+            {
+                result.AddRange(m.Subjects.ToList<Subject>());
+            }
+            return RemoveDoubleSubjects(result);
+        }
+
+        /// <summary>
+        /// Returns the List of Moduls which have to be controled or released.
+        /// The Modulstate of the Moduls depend on the userrole stored in the HttpContext parameter
+        /// </summary>
+        /// <param name="context"></param>
+        /// Necessary to get the Userrole and therefore the right Modules
+        /// <param name="subjectId"></param>
+        /// <returns></returns>
+        public List<Modul> GetModulsKooFrei(HttpContext context)
+        {
+            List<Modul> editableModules = getEditableModules();
+            List<Modul> modules = new List<Modul>();
+
+            foreach (Modul m in editableModules)
+            {
+                Modul modul = GetHighestModulVersion(m);
+
+                if (HttpContext.Current.User.IsInRole("Freigabeberechtigter"))
+                {
+                    if (HttpContext.Current.User.IsInRole("Koordinator")
+                        && (modul.State == ModulState.waitingForFreigeber || modul.State == ModulState.created))
+                    {
+                        modules.Add(modul);
+                    }
+                    else if (modul.State == ModulState.waitingForFreigeber)
+                    {
+                        modules.Add(modul);
+                    }
+                }
+                else if (HttpContext.Current.User.IsInRole("Koordinator") && modul.State == ModulState.created)
+                {
+                    modules.Add(modul);
+                }
+            }
+
+            return RemoveDoubleModules(modules);
+        }
+
+        public List<Subject> GetSubjectsKooFrei(HttpContext context, int handbookId)
+        {
+            List<Subject> All = GetSubjectsKooFrei(context);
+            List<Subject> result = new List<Subject>();
+            for (int i = 0; i < All.Count; i++)
+            {
+                if (All[i].ModulhandbookID == handbookId)
+                {
+                    result.Add(All[i]);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Returns the List of Moduls which have to be controled or released.
+        /// The Modulstate of the Moduls depend on the userrole stored in the HttpContext parameter
+        /// </summary>
+        /// <param name="context"></param>
+        /// Necessary to get the Userrole and therefore the right Modules
+        /// <param name="subjectId"></param>
+        /// <returns></returns>
+        public List<Modul> GetModulsKooFrei(HttpContext context, int subjectId)
+        {
+            List<Modul> all=GetModulsKooFrei(context);
+            List<Modul> toReturn = new List<Modul>();
+            foreach (Modul m in all)
+            {
+                bool toAdd = false;
+                foreach (Subject s in m.Subjects)
+                {
+                    if (s.SubjectID == subjectId)
+                    {
+                        toAdd = true;
+                    }
+                }
+                if (toAdd)
+                {
+                    toReturn.Add(m);
+                }
+            }
+            return toReturn;
+        }
+        //----------------------------Koordinator and Freigeber Logic end-----------------------------///
+
+        /// <summary>
+        /// Returns a List of Moduls, which have the ModulState state
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public List<Modul> GetModulsByState(ModulState state)
+        {
+            ModulhandbookContext mhc = new ModulhandbookContext();
+            return mhc.Modules.Where(m => m.State == state).ToList<Modul>();
+        }
+
+        /// <summary>
+        /// Remove Moduls from a List if they occure more the once
+        /// </summary>
+        /// <param name="modules"></param>
+        /// <returns>The List without double Moduls</returns>
+        public List<Modul> RemoveDoubleModules(List<Modul> modules)
+        {
+            if (modules.Count >= 2)
+            {
+                for (int i = 0; i < modules.Count-1; i++)
+                {
+                    bool reset = false;
+                    for (int j = i + 1; j < modules.Count; j++)
+                    {
+                        if (modules[i].ModulID == modules[j].ModulID)
+                        {
+                            modules.RemoveAt(j);
+                            reset = true;
+                        }
+                    }
+                    if (reset)
+                    {
+                        i = -1;
+                    }
+                }
+            }
+            return modules;
+        }
+        /// <summary>
+        /// Returns a List of Subjects without double elements
+        /// </summary>
+        /// <param name="subjects"></param>
+        /// <returns></returns>
+        public List<Subject> RemoveDoubleSubjects(List<Subject> subjects)
+        {
+            if (subjects.Count >= 2)
+            {
+                for (int i = 0; i < subjects.Count - 1; i++)
+                {
+                    bool reset = false;
+                    for (int j = i + 1; j < subjects.Count; j++)
+                    {
+                        if (subjects[i].SubjectID == subjects[j].SubjectID)
+                        {
+                            subjects.RemoveAt(j);
+                            reset = true;
+                        }
+                    }
+                    if (reset)
+                    {
+                        i = -1;
+                    }
+                }
+            }
+            return subjects;
+        }
+        /// <summary>
+        /// Returns a List of Modulhandbooks without double elements
+        /// </summary>
+        /// <param name="books"></param>
+        /// <returns></returns>
+        public List<Modulhandbook> RemoveDoubleHandbooks(List<Modulhandbook> books)
+        {
+            if (books.Count >= 2)
+            {
+                for (int i = 0; i < books.Count - 1; i++)
+                {
+                    bool reset = false;
+                    for (int j = i + 1; j < books.Count; j++)
+                    {
+                        if (books[i].ModulhandbookID == books[j].ModulhandbookID)
+                        {
+                            books.RemoveAt(j);
+                            reset = true;
+                        }
+                    }
+                    if (reset)
+                    {
+                        i = -1;
+                    }
+                }
+            }
+            return books;
         }
     }
 }

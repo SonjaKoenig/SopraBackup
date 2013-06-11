@@ -1,44 +1,57 @@
 <Modulhandbücher>
-  <Semester Heading="Sommersemester 2013">
+  <Semester Heading="Wintersemester 2012/2013">
     <Modulhandbuch Heading="Bachelor Software-Engineering">
-      <Fach Heading="Mathematik">
-        <Modul Heading="Lineare Algebra" />
-        <Modul Heading="Programmieren von Systemen" />
-      </Fach>
-      <Fach Heading="Technische und Systemnahe Informatik">
-        <Modul Heading="Technische Informatik 1" />
-        <Modul Heading="Analysis 1 für Informatiker und Ingenieure" />
-        <Modul Heading="Künstliche Intelligenz" />
-      </Fach>
-      <Fach Heading="Abschlussarbeit">
-        <Modul Heading="Grundlagen der Rechnernetze" />
-        <Modul Heading="Künstliche Intelligenz" />
-      </Fach>
-      <Fach Heading="Schwerpunkt SoftwareEngineering">
-        <Modul Heading="Technische Informatik 2" />
-        <Modul Heading="Künstliche Intelligenz" />
-      </Fach>
-      <Fach Heading="Schwerpunkt BWL">
-        <Modul Heading="Einführung in die Informatik" />
-        <Modul Heading="Künstliche Intelligenz" />
-      </Fach>
+      <Fach Heading="Vertiefungsmodul Medieninformatik" />
+      <Fach Heading="Vertiefungsmodul SWE" />
     </Modulhandbuch>
-    <Modulhandbuch Heading="Master Medieninformatik">
-      <Fach Heading="Seminar">
-        <Modul Heading="Lineare Algebra" />
-        <Modul Heading="Künstliche Intelligenz" />
-      </Fach>
-    </Modulhandbuch>
-    <Modulhandbuch Heading="Bachelor Informatik">
-      <Fach Heading="Praktische und Angewandte Informatik">
-        <Modul Heading="Lineare Algebra" />
-      </Fach>
-    </Modulhandbuch>
-    <Modulhandbuch Heading="Master Software-Engineering" />
-    <Modulhandbuch Heading="Bachelor Medieninformatik" />
-    <Modulhandbuch Heading="Master Informatik" />
   </Semester>
-  <Semester Heading="Wintersemester 2012/13">
-    <Modulhandbuch Heading="Bachelor Software-Engineering" />
+  <Semester Heading="Sommersemester 2013">
+    <Modulhandbuch Heading="Master Medieninformatik">
+      <Fach Heading="Anwendungsfach" />
+      <Fach Heading="Vertiefungsmodul Medieninformatik" />
+    </Modulhandbuch>
+    <Modulhandbuch Heading="Bachelor Software-Engineering">
+      <Fach Heading="Mathe">
+        <Modul Heading="Angewandte Stochastik I " />
+        <Modul Heading="Deskriptive Statistik" />
+        <Modul Heading="Grundlagen der Rechnerarchitektur" />
+      </Fach>
+      <Fach Heading="Praktische und Angewandte Informatik">
+        <Modul Heading="Angewandte Stochastik I " />
+        <Modul Heading="Grundlagen der Rechnerarchitektur" />
+      </Fach>
+    </Modulhandbuch>
+  </Semester>
+  <Semester Heading="Wintersemester 2013/2014">
+    <Modulhandbuch Heading="Bachelor Informatik">
+      <Fach Heading="Abschlussarbeit">
+        <Modul Heading="Deskriptive Statistik" />
+        <Modul Heading="Grundlagen der Rechnerarchitektur" />
+      </Fach>
+      <Fach Heading="Anwendungsfach">
+        <Modul Heading="Graphentheorie I " />
+      </Fach>
+    </Modulhandbuch>
+    <Modulhandbuch Heading="Master Software-Engineering">
+      <Fach Heading="Theoretische Informatik" />
+      <Fach Heading="Technische und Systemnahe Informatik">
+        <Modul Heading="Deskriptive Statistik" />
+      </Fach>
+    </Modulhandbuch>
+    <Modulhandbuch Heading="Bachelor Medieninformatik">
+      <Fach Heading="Schwerpunktmodul">
+        <Modul Heading="Graphentheorie I " />
+      </Fach>
+      <Fach Heading="Vertiefungsmodul SWE">
+        <Modul Heading="Graphentheorie I " />
+      </Fach>
+    </Modulhandbuch>
+    <Modulhandbuch Heading="Master Informatik">
+      <Fach Heading="Schwerpunktmodul" />
+    </Modulhandbuch>
+    <Modulhandbuch Heading="Bachelor Software-Engineering">
+      <Fach Heading="Proseminar" />
+      <Fach Heading="Seminar" />
+    </Modulhandbuch>
   </Semester>
 </Modulhandbücher>

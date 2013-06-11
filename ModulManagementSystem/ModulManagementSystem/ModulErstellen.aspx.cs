@@ -14,52 +14,24 @@ namespace ModulManagementSystem
 {
     public partial class ModulErstellen : System.Web.UI.Page
     {
-        //start at zero
-        int anzahlDerPflichtfelder = 7;
-
-        //The Descriptions for the mandatory fields
-        List<String> defaultDescriptionsText = new List<string>(){"Kürzel des Moduls","Hier Modulname eintragen", "Numerische Wert der Leistungspunkte",
-                "Semesterwochenstunden eintragen","Sprache", "Hier Turnus eintragen","Name des Modulverantwortlichen","Name des Dozenten",
-                "Einordnung in den Studiengang","Inhaltliche Voraussetzungen","Lernziele","Inhalt der Vorlesung","Literatur zur Vorlesung",
-                "Hier Lehr und Lernform eintragen","Arbeitsaufwand in Stunden","Art der Bewertungsmethode","Hier Leistungspunkte eintragen",
-                "Hier Notenbildung eintragen"};
-
+        List<ModulPartDescription> defaultMPDs = GlobalNames.getDefaultDescriptions();
         protected void Page_Load(object sender, EventArgs e)
         {
             if(!HttpContext.Current.User.IsInRole("Modulverantwortlicher"))
             {
                 Response.Redirect("Default.aspx");
             }
-
             if (!IsPostBack)
             {
-                List<ModulPartDescription> list = new List<ModulPartDescription>();
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameNum(), Description = this.defaultDescriptionsText[0], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameText(), Description = this.defaultDescriptionsText[1], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameECTS(), Description = this.defaultDescriptionsText[2], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameWeekHours(), Description = this.defaultDescriptionsText[3], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameLanguage(), Description = this.defaultDescriptionsText[4], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameTurnus(), Description = this.defaultDescriptionsText[5], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameMV(), Description = this.defaultDescriptionsText[6], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameLecturer(), Description = this.defaultDescriptionsText[7], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameFitsInStudy(), Description = this.defaultDescriptionsText[8], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameReqContent(), Description = this.defaultDescriptionsText[9], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameEducation(), Description = this.defaultDescriptionsText[10], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameContent(), Description = this.defaultDescriptionsText[11], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameLiterature(), Description = this.defaultDescriptionsText[12], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameTeaching(), Description = this.defaultDescriptionsText[13], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameEffort(), Description = this.defaultDescriptionsText[14], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameMark(), Description = this.defaultDescriptionsText[15], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameReqFormal(), Description = this.defaultDescriptionsText[16], IsNeeded = true });
-                list.Add(new ModulPartDescription() { Name = GlobalNames.getModulNameGrade(), Description = this.defaultDescriptionsText[17], IsNeeded = true });
-                Session["MPD"] = list;
+                Session["MPD"] = defaultMPDs;
                 Session["CurrentIndex"] = 0;
                 Session["Subjects"] = null;
                 Session["Subjects"] = GetSubjects();
+                DropDownList.DataSource = GetModulhandbooks();
                 DropDownList.DataBind();
                 DropDownList.SelectedValue = Request.QueryString["ModulhandbookID"];
-                NameTextBox.Text = list.First().Name;
-                DescriptionTextBox.Text = this.defaultDescriptionsText[0];            
+                NameTextBox.Text = defaultMPDs.First().Name;
+                DescriptionTextBox.Text = defaultMPDs.First().Description;  
             }
             else 
             {
@@ -97,7 +69,6 @@ namespace ModulManagementSystem
                 {
                     CheckforMessage("Neues Modul erstellt!");
                     jl.CreateNewJob(ModulState.created, list, newModule, owner);
-                    Response.Redirect("Default.aspx");
                 }
                 else 
                 {
@@ -115,22 +86,10 @@ namespace ModulManagementSystem
             List<ModulPartDescription> descriptions = GetModulpartDescriptions();
             for (int i = 0; i < descriptions.Count; i++)
             {
-                //Check double ModulPartDescriptions
-                for (int j = i+1; j < descriptions.Count; j++)
-                {
-                    if (descriptions[i].Name.Equals(descriptions[j].Name))
-                    {
-                        Session["Message"] = true;
-                        CheckforMessage("Es können keine doppelten Modulpunkte akzeptiert werden!");
-                        jumpToDescription(i);
-                        return false;
-                    }
-                }
-
                 //Check for undone mandatory fields
-                if (i <= anzahlDerPflichtfelder)
+                if (descriptions[i].IsNeeded)
                 {
-                    if (descriptions[i].Description.Equals(defaultDescriptionsText[i]))
+                    if (descriptions[i].Description.Equals(defaultMPDs[i].Description))
                     {
                         Session["Message"] = true;
                         CheckforMessage("Ein Pflichtfeld muss noch bearbeitet werden");
@@ -159,7 +118,9 @@ namespace ModulManagementSystem
                 }
 
                 //Check for invalide Types
-                if (descriptions[i].Name.Equals("ECTS-Punkte") || descriptions[i].Name.Equals("Semesterwochenstunden"))
+                if (descriptions[i].Name.Equals(GlobalNames.getModulNameECTS()) 
+                    || descriptions[i].Name.Equals(GlobalNames.getModulNameWeekHours())
+                    || descriptions[i].Name.Equals(GlobalNames.getModulNameEffort()))
                 {
                     double Num;
                     bool isNum = double.TryParse(descriptions[i].Description, out Num);
@@ -270,7 +231,7 @@ namespace ModulManagementSystem
                 }
 
                 TableCell tc2 = new TableCell();
-                if (DescriptionDone(list[i], defaultDescriptionsText[i]))
+                if (DescriptionDone(list[i], defaultMPDs[i].Description))
                 {
                     Image icon = new Image();
                     icon.ImageUrl = "~/Images/haken.gif";
@@ -286,17 +247,6 @@ namespace ModulManagementSystem
             linkSelected.Style.Value = "background-color:yellow";
         }
 
-        private void ControlNameTextBox() 
-        {
-            if (GetCurrentIndex() <= anzahlDerPflichtfelder)
-            {
-                NameTextBox.Enabled = false;
-            }
-            else 
-            {
-                NameTextBox.Enabled = true;
-            }
-        }
         private int GetCurrentIndex()
         {
             if (Session["CurrentIndex"] != null)
@@ -308,7 +258,10 @@ namespace ModulManagementSystem
                 return 0;
             }
         }
-
+        /// <summary>
+        /// Returns the List of Modulpartdescriptions, which are stored in the "MPD" Cookie
+        /// </summary>
+        /// <returns></returns>
         private List<ModulPartDescription> GetModulpartDescriptions()
         {
             if (Session["MPD"] != null)
@@ -320,6 +273,10 @@ namespace ModulManagementSystem
                 return null;
             }
         }
+        /// <summary>
+        /// Helper methode to draw a Message at the next Postback to the Error Label
+        /// </summary>
+        /// <param name="message"></param>
         private void CheckforMessage(String message)
         {
             if (Session["Message"] != null && (bool)Session["Message"])
@@ -328,6 +285,10 @@ namespace ModulManagementSystem
                 ErrorLabel.Visible = true;
             }
         }
+        /// <summary>
+        /// Stored the values of the textboxes to the MPD Cookie, "jumps" to the chosen Modulpartdescription and draws his content. 
+        /// </summary>
+        /// <param name="index"></param>
         private void jumpToDescription(int index)
         {
             int indexOfCurrentModulpunkt = GetCurrentIndex();
@@ -336,12 +297,9 @@ namespace ModulManagementSystem
             List<ModulPartDescription> list = GetModulpartDescriptions();
 
             list[indexOfCurrentModulpunkt].Description = DescriptionTextBox.Text;
-            if (indexOfCurrentModulpunkt > anzahlDerPflichtfelder)
-            {
-                list[indexOfCurrentModulpunkt].Name = NameTextBox.Text;
-                LinkButton link2 = (LinkButton)ModulpunkteTable.FindControl("Modulpunkt" + indexOfCurrentModulpunkt);
-                link2.Text = NameTextBox.Text;
-            }
+            list[indexOfCurrentModulpunkt].Name = NameTextBox.Text;
+            LinkButton link2 = (LinkButton)ModulpunkteTable.FindControl("Modulpunkt" + indexOfCurrentModulpunkt);
+            link2.Text = NameTextBox.Text;
 
             DescriptionTextBox.Text = list[indexOfNextModulpunkt].Description;
             NameTextBox.Text = list[indexOfNextModulpunkt].Name;
@@ -351,11 +309,11 @@ namespace ModulManagementSystem
 
             ModulpunkteTable.Rows.Clear();
             DrawTable();
-            ControlNameTextBox();
         }
 
-
-
+        /// <summary>
+        /// Draws the Subjects of the chosen Modulhandbok of the Dropdownlist. Marks allready chosen subjects with color
+        /// </summary>
         private void DrawSubjects()
         {
             List<Subject> list = GetSubjectsToDisplay();
@@ -392,13 +350,7 @@ namespace ModulManagementSystem
         private List<Subject> GetSubjectsToDisplay()
         {
             ArchiveLogic al=new ArchiveLogic();
-            ModulhandbookContext mhc=new ModulhandbookContext();
-            String s = DropDownList.SelectedValue.Trim();
-            int id = Int32.Parse(s);
-            List<Modulhandbook> list = mhc.Modulhandbooks.Where(m => m.ModulhandbookID == id).ToList<Modulhandbook>();
-
-            return al.getAllSubjectsFromModulhandbook(list.First().ModulhandbookID);
-
+            return al.getSubjectstoDisplay(DropDownList.SelectedValue.Trim());
         }
         private List<Subject> GetSubjects()
         {
@@ -439,23 +391,31 @@ namespace ModulManagementSystem
             DrawSubjects();
         }
 
-        //new stuff
+        /// <summary>
+        /// Creates a Pdf of the Current Modul and open it with a valid pdf viewer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void PdfBtn_Click(object sender, EventArgs e)
         {
+            jumpToDescription(0);
             Core.PDFOperations.PDFHandler pdf = new Core.PDFOperations.PDFHandler();
-
-            int indexOfCurrentModulpunkt = GetCurrentIndex();
             List<ModulPartDescription> list = GetModulpartDescriptions();
-            list[indexOfCurrentModulpunkt].Name = NameTextBox.Text;
-            list[indexOfCurrentModulpunkt].Description = DescriptionTextBox.Text;
-            var mu = System.Web.Security.Membership.GetUser();
-            Guid owner = (Guid)mu.ProviderUserKey;
-            ArchiveLogic al = new ArchiveLogic();
-            JobLogic jl = new JobLogic();
-            List<Subject> subjects = GetSubjects();
-            Modul newModule = al.CreateModul(list, ModulState.created, owner, owner, DateTime.Now, subjects, 1);
+            String title = "";
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].Name.Equals(GlobalNames.getModulNameText()))
+                {
+                    title = list[i].Description;
+                    i = list.Count;
+                }
+            }
+            Modul newModule = new Modul()
+            {
+                Descriptions = list,
+            };
+            pdf.CreatePDF(newModule, title, Server);
 
-            pdf.CreatePDF(newModule, Server);
         }
 
         private bool DescriptionDone(ModulPartDescription mpd, String defaultText)
@@ -480,6 +440,11 @@ namespace ModulManagementSystem
                 }
             }
             return true;
+        }
+        protected ICollection<Modulhandbook> GetModulhandbooks()
+        {
+            ArchiveLogic al = new ArchiveLogic();
+            return al.getEditableModulhandbooks();
         }
     }
 }

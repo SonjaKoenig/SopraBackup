@@ -2,7 +2,7 @@
 
 <asp:Content runat="server" ID="Searchbar" ContentPlaceHolderID="Searchbar">
     <div class=float-right id="searchbar-position">
-        <asp:TextBox runat="server" ID="SearchText" CssClass="searchbox-style" />
+        ^&nbsp;&nbsp;&nbsp; s<asp:TextBox runat="server" ID="SearchText" CssClass="searchbox-style" />
         <asp:Button ID="SearchButton" runat="server" CommandName="SearchButton" Text="Suchen" OnClick="SearchButton_Click" />
     </div>
 </asp:Content>
@@ -10,8 +10,8 @@
     <section class="featured">
         <div class="content-wrapper">
             <hgroup class="title">
-                <h1 style="color: #3e5667"><%: Title %></h1>
-                <h2 style="color: #999">Alles rund um Modulhandbücher, Fächer und Module</h2>
+                <h1><%: Title %></h1>
+                <h2>Alles rund um Modulhandbücher, Fächer und Module</h2>
             </hgroup>
             <div class="DefaultContainer">
                 <div id="job_list"> 
@@ -47,7 +47,7 @@
                 <%-- searchbar --%>
                 <div class="DefaultContainer-Right">
                     <div class="DefaultTable">
-                        <asp:BulletedList runat="server" ID="searchResultList" DisplayMode="LinkButton" OnClick="searchResultList_Click" CssClass="list-style" Width="280px" />
+                        <asp:BulletedList runat="server" ID="searchResultList" DisplayMode="LinkButton" OnClick="searchResultList_Click" CssClass="list-style" Width="200px" />
                     </div>
                     <%-- Newsfeed --%>
                     <div class="DefaultNewsfeed">

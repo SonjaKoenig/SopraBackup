@@ -2,18 +2,18 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <hgroup class="title">
-        <h1 style="color: #3e5667"><%: Title %>.</h1>
-        <h2 style="color: #999">Verwalten Sie Ihr Konto.</h2>
+        <h1><%: Title %>.</h1>
+        <h2>Verwalten Sie Ihr Konto.</h2>
     </hgroup>
 
-    <section ID="passwordForm">
+    <section id="passwordForm">
         <asp:PlaceHolder runat="server" ID="successMessage" Visible="false" ViewStateMode="Disabled">
             <p class="message-success"><%: SuccessMessage %></p>
         </asp:PlaceHolder>
 
         <p style="padding: 12px; color: #808080;">Sie sind angemeldet als <strong><%: User.Identity.Name %></strong>.</p>        
 
-        <div ID="info_panel" style="padding: 12px; top: 23px; left: 0px; height: 429px; width: 345px;">
+        <div id="info_panel" style="padding: 12px; top: 23px; left: 0px; height: 429px; width: 345px;">
             <asp:PlaceHolder runat="server" ID="changePassword" Visible="false">
                 <h3 style="color: white;">Kennwort ändern</h3>
                 <p>&nbsp;</p>

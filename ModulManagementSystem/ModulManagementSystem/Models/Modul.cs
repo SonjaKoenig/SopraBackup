@@ -6,6 +6,10 @@ using System.Web;
 
 namespace ModulManagementSystem.Models
 {
+
+    /// <summary>
+    /// the database model for a Module.
+    /// </summary>
     public class Modul 
     {
         [ScaffoldColumn(false), KeyAttribute]
@@ -38,5 +42,5 @@ namespace ModulManagementSystem.Models
 
         public virtual ICollection<Job> Jobs { get; set; }
     }
-    public enum ModulState { created, waitingForAcceptionFromFreigabeberechtigter, freigeben, abgelehnt, vorgeschlagen };
+    public enum ModulState {created, waitingForFreigeber, archiviert, abgelehnt};
 }

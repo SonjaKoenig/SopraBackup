@@ -2,8 +2,8 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <hgroup class="title">
-        <h1 style="color: #3e5667"><%: Title %>.</h1>
-        <h2 style="color: #999">Lokales Konto für die Anmeldung verwenden.</h2>
+        <h1><%: Title %>.</h1>
+        <h2>Lokales Konto für die Anmeldung verwenden.</h2>
     </hgroup>
     <section id="loginForm">
         <asp:Login runat="server" ViewStateMode="Disabled" RenderOuterTable="false">

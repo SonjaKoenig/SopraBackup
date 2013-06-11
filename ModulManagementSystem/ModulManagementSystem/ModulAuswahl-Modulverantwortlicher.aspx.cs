@@ -23,15 +23,14 @@ namespace ModulManagementSystem
                     Response.Redirect("Default.aspx");
                 }
             }
-            //Erstellte Module suchen oder neues Modul erstellen
             if (Request.QueryString["Bearbeiten"] != null)
             {
-                //erstelltes Modul soll bearbeitet werden
+                //A allready existing Module should be edited
                 if (Request.QueryString["Bearbeiten"].Equals("true"))
                 {
                     DrawModuls();
                 }
-                //neues Modul soll erstellt werden
+                //A new Module should be created
                 else
                 {
                     if (Request.QueryString["ModulhandbookID"] != null)
@@ -57,11 +56,7 @@ namespace ModulManagementSystem
         void Subject_Click(object sender, EventArgs e)
         {
             LinkButton link = sender as LinkButton;
-
             Response.Redirect("ModulErstellen.aspx?SubjectId=" + link.ID + "&ModulhandbookID=" + Request.QueryString["ModulhandbookID"]);
-
-            //Response.Redirect("ModulAuswahl-Modulverantwortlicher.aspx?Bearbeiten=" + Request.QueryString["Bearbeiten"]
-             //   + "&ModulhandbookID=" + Request.QueryString["ModulhandbookID"] + "&SubjectID=" + link.ID);
         }
 
         void Modulhandbook_Click(object sender, EventArgs e)
@@ -100,7 +95,8 @@ namespace ModulManagementSystem
         private void DrawModulhandbooks()
         {
             Core.DBOperations.ArchiveLogic al = new Core.DBOperations.ArchiveLogic();
-            List<Modulhandbook> modulhandbooks = al.getAllModulhandbooks();
+            List<Modulhandbook> modulhandbooks = al.getEditableModulhandbooks();
+
             foreach (Modulhandbook m in modulhandbooks)
             {
                 TableCell tc = new TableCell();
@@ -134,8 +130,10 @@ namespace ModulManagementSystem
 
         private void DrawModuls()
         {
-            List<Modul> moduls = GetModuls();
-            Core.DBOperations.ArchiveLogic al = new Core.DBOperations.ArchiveLogic();
+            ArchiveLogic al = new ArchiveLogic();
+            var mu = System.Web.Security.Membership.GetUser();
+            Guid owner = (Guid)mu.ProviderUserKey;
+            List<Modul> moduls = al.GetModulsModulverantwortlicher(HttpContext.Current, owner);
             foreach (Modul m in moduls)
             {
                 TableCell tc = new TableCell();
@@ -149,18 +147,11 @@ namespace ModulManagementSystem
                 ModulTable.Rows.Add(tr);
             }
         }
-        protected void NewModulBtn_Click(object sender, EventArgs e)
-        {
-            String SubjectId = (string)Request.QueryString["SubjectID"];
-           Response.Redirect("ModulErstellen.aspx?SubjectId=" + SubjectId+"&ModulhandbookID="+Request.QueryString["ModulhandbookID"]);
-
-        }
         void Modul_Click(Object sender, EventArgs e)
         {
             LinkButton link = sender as LinkButton;
            Response.Redirect("ModulBearbeiten.aspx?ModulID=" + link.ID);
         }
-
         private bool Bearbeiten()
         {
             if (Request.QueryString["Bearbeiten"] != null)
@@ -168,60 +159,6 @@ namespace ModulManagementSystem
                 return Request.QueryString["Bearbeiten"].Equals("true");
             }
             return false;
-        }
-        /// <summary>
-        /// Liefert die Module des Modulverantwortlichen unter BerÃ¼cksichtigung der Versionen
-        /// </summary>
-        /// <returns></returns>
-        private List<Modul> GetModuls()
-        {
-            var mu = System.Web.Security.Membership.GetUser();
-            Guid owner = (Guid)mu.ProviderUserKey;
-            ModulhandbookContext mhc = new ModulhandbookContext();
-            ArchiveLogic al =new ArchiveLogic();
-            List<Modul> allModuls = mhc.Modules.Where(m => m.Owner == owner).ToList<Modul>();
-
-            
-            List<Modul> highestVersion = new List<Modul>();
-
-            //search for highest version
-            foreach (Modul m in allModuls)
-            {
-                highestVersion.Add(GetHighestModulVersion(m));
-            }
-
-            //remove doubles
-            for (int i = 0; i < highestVersion.Count; i++)
-            {
-                String Name = al.getNameFromModule(highestVersion[i]);
-                int counter = 0;
-                for (int j=0;j<highestVersion.Count;j++)
-                {
-                    if (al.getNameFromModule(highestVersion[j]) == Name)
-                    {
-                        counter++;
-                        if (counter > 1)
-                        {
-                            highestVersion.RemoveAt(j);
-                            counter--;
-                        }
-                    }
-                }
-            }
-            return highestVersion;
-            
-        }
-        /// <summary>
-        /// Returns the highest version of the Modul
-        /// </summary>
-        /// <param name="modul">The name of the Modul</param>
-        /// <returns></returns>
-        private Modul GetHighestModulVersion(Modul modul)
-        {
-            ArchiveLogic al = new ArchiveLogic();
-            ModulhandbookContext mhc = new ModulhandbookContext();
-            String Name = al.getNameFromModule(modul);
-            return al.getModuleByNameAttendVersion(Name);
         }
     }
 }

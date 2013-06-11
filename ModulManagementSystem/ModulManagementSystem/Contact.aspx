@@ -2,8 +2,8 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <hgroup class="title">
-        <h1 style="color: #3e5667"><%: Title %>.</h1>
-        <h2 style="color: #999">So erreichen Sie unseren Support.</h2>
+        <h1><%: Title %>.</h1>
+        <h2>So erreichen Sie unseren Support.</h2>
     </hgroup>
 
     <div id="kontakt_panel" aria-atomic="False" style="padding: 12px; border-width: 5px; font-family: Arial, Helvetica, Sans-Serif; top: 0px; left: 0px; height: 210px; width: 72%;">

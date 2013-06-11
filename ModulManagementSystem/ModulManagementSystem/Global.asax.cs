@@ -29,6 +29,17 @@ namespace ModulManagementSystem
             {
                 Membership.CreateUser("Admin", "Pa$$word", "christian.brenner@uni-ulm.de");
                 Roles.AddUserToRole("Admin", "Administrator");
+                Roles.AddUserToRole("Admin", "Freigabeberechtigter");
+                Roles.AddUserToRole("Admin", "Modulverantwortlicher");
+                Roles.AddUserToRole("Admin", "Koordinator");
+                Roles.AddUserToRole("Admin", "User");
+                
+            }
+            
+            if (Membership.GetUser("haldeigosh") == null)
+            {
+                Membership.CreateUser("haldeigosh", "haldeigosh", "sascha.rechenberger@uni-ulm.de");
+                Roles.AddUserToRole("haldeigosh", "Administrator");
             }
 
             if (!Roles.RoleExists("User"))

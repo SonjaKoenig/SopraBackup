@@ -2,8 +2,8 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent" >
     <hgroup class="title">
-        <h1 style="color: #3e5667"><%: Title %>.</h1>
-        <h2 style="color: #999">Hier kommen noch ein paar Informationen über das MMS hin.</h2>
+        <h1><%: Title %>.</h1>
+        <h2>Hier kommen noch ein paar Informationen über das MMS hin.</h2>
     </hgroup>
    
     <div ID="info_panel" style="padding: 12px; border-width: 5px; font-family: Arial, Helvetica, Sans-Serif; color: #FFFFFF; top: -2px; left: 12px; height: 275px; width: 45%">

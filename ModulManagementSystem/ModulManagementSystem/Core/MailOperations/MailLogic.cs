@@ -27,10 +27,6 @@ namespace ModulManagementSystem.Core.MailOperations
                 client.EnableSsl = true; //Die meisten Anbieter verlangen eine SSL-Verschlüsselung   
                 
                 client.Send(mail); //Senden
-                
-                // }
-
-
             }
             catch (Exception ex)
             {

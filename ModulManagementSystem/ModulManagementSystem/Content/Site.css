@@ -387,9 +387,14 @@ hgroup.title h1, hgroup.title h2 {
     display: inline;
 }
 
+hgroup.title h1{
+    color: #3e5667;
+}
+
 hgroup.title h2 {
     font-weight: normal;
     margin-left: 3px;
+    color: #999;
 }
 
 /* features */
@@ -888,17 +893,24 @@ tr.pager td {
   float: left;
   width: 100%;
   position:relative;
+    top: 0px;
+    left: 0px;
 }
 
 .DefaultContainer-Left{
     float:left;
-    width:50%;
+    width:62%;
     position:relative;
+    top: 0px;
+    left: 0px;
 }
 .DefaultContainer-Right{
     float:left;
-    width:50%;
+    width:38%;
     position:relative;
+    top: 0px;
+    left: -7px;
+    height: 219px;
 }
 
 #modul_control {
@@ -958,10 +970,10 @@ tr.pager td {
 
 .DefaultNewsfeed {
     position: relative;
-    height:150px;
+    height:98px;
     background-color: rgba(153, 153, 153, 0.50);
     float:left;
-    width:97%; 
+    width:96%; 
     -moz-background-clip: padding-box;     
     -webkit-background-clip:padding-box;
     background-clip: padding-box;
@@ -1022,13 +1034,13 @@ tr.pager td {
 #register_panel{
     position:relative;
     margin-left:50px;
-    height:601px;
+    height:730px;
     background-color:#7ac0da;
     -webkit-box-shadow:4px 0 5px rgba(0,0,0,0.2);
     box-shadow: 4px 0 5px rgba(0,0,0,0.2);
     top: 40px;
     left: 0px;
-    width: 268px;
+    width: 290px;
 }
 
 #login_panel{
@@ -1053,4 +1065,22 @@ tr.pager td {
     box-shadow: 4px 0 5px rgba(0,0,0,0.2);
     top: 0px;
     left: -33px;
+}
+
+#faecher_Auswahl{
+    padding-left:4em;
+    width:25%;
+    float:left
+}
+
+#job_Panel{
+    position:relative;
+    top:20px;
+    margin-left:50px;
+    height:368px;
+    background-color:#7ac0da;
+    -webkit-box-shadow:4px 0 5px rgba(0,0,0,0.2);
+    box-shadow: 4px 0 5px rgba(0,0,0,0.2);
+    left: 0px;
+    width: 700px;
 }

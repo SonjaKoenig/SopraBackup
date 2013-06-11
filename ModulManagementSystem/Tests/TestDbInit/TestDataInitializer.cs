@@ -21,7 +21,6 @@ namespace Tests
             GetModulPartDescriptions().ForEach(a => context.ModulPartDescriptiones.Add(a));
             GetSemesters().ForEach(s => context.Semesters.Add(s));
             
-            
             var modules = new List<Modul>
             {
 
@@ -46,7 +45,7 @@ namespace Tests
                 },
                 new Modul{
                     ModulID = 2,
-                    State = ModulState.waitingForAcceptionFromFreigabeberechtigter,
+                    State = ModulState.waitingForFreigeber,
                     Version=1,
            
                     LastChange=DateTime.Now,

@@ -8,6 +8,9 @@ using System.Web;
 
 namespace ModulManagementSystem.Models
 {
+    /// <summary>
+    /// context for database access
+    /// </summary>
     public class ModulhandbookContext : DbContext
     {
         public ModulhandbookContext()

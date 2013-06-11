@@ -8,11 +8,16 @@
         <label>Modulpunkte</label>
         <asp:table ID="ModulpunkteTable" runat="server">
         </asp:table>
+        <label>Fächer</label>
+        <asp:DropDownList ID="DropDownList" runat="server" AutoPostBack="true" DataTextField="Name" DataValueField="ModulhandbookID">
+            <asp:ListItem></asp:ListItem>
+        </asp:DropDownList>    
+        <asp:Table Id="SubjectsTable" runat="server"></asp:Table>
+        <asp:Label ID="DebugLabel" runat="server"></asp:Label>
         <div style="height:100%">
-
         </div>       
     </div>
-    <div style="float:left; width:50%">
+    <div style="float:left; padding-left:4em; width:auto">
         <asp:TextBox ID="NameTextBox" Enabled="false" runat="server" Text="Name" width="100%"></asp:TextBox>
         <br />       
         <asp:TextBox  ID="DescriptionTextBox" TextMode="multiline" runat="server" Text="Titel der Veranstaltung" height="200px" width="100%" style="resize:none"></asp:TextBox>
@@ -33,14 +38,5 @@
         <asp:Button ID="PdfBtn" runat="server" Text="Pdf anzeigen" OnClick="PdfBtn_Click" />
     </div>
 
-    <div style="padding-left:4em; width:25%; float:left ">
-        <label>Fächer</label>
-        <asp:DropDownList ID="DropDownList" runat="server" AutoPostBack="true" DataSourceID="handbooksource" DataTextField="Name" DataValueField="ModulhandbookID">
-            <asp:ListItem></asp:ListItem>
-        </asp:DropDownList>
-        <asp:SqlDataSource ID="handbooksource" runat="server" ConnectionString="<%$ ConnectionStrings:ModulManagementSystemData %>" SelectCommand="SELECT [Name], [ModulhandbookID], [SemesterID], [Abschluss], [FspoYear], [ValidSemester] FROM [Modulhandbooks]"></asp:SqlDataSource>       
-        <asp:Table Id="SubjectsTable" runat="server"></asp:Table>
-        <asp:Label ID="DebugLabel" runat="server"></asp:Label>
-    </div>
 </asp:Content>
 

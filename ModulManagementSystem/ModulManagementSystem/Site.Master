@@ -99,12 +99,12 @@
                             <%-- Header attributes User is logged in --%>
                             <LoggedInTemplate>
                                 <ul class="topnav">
-                                    <li>Hallo <a ID="A1" runat="server" class="username" title="Manage your account">
+                                    <li>Hallo <a id="A1" runat="server" class="username" title="Manage your account">
                                         <asp:LoginName ID="LoginName1" runat="server" CssClass="username" />
                                     </a>!
                                         <ul class="subnav">
-                                            <li><a ID="A3" runat="server" href="#">Job List</a></li>
-                                            <li><a ID="A4" runat="server" href="~/Account/Manage.aspx">Account Settings</a></li>
+                                            <li><a id="A3" runat="server" href="~/Jobs.aspx">Job List</a></li>
+                                            <li><a id="A4" runat="server" href="~/Account/Manage.aspx">Account Settings</a></li>
                                             <li>
                                                 <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutAction="Redirect" LogoutText="Abmelden" LogoutPageUrl="~/" />
                                             </li>

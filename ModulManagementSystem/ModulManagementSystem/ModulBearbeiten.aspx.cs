@@ -14,6 +14,7 @@ namespace ModulManagementSystem
 {
     public partial class ModulBearbeiten : System.Web.UI.Page
     {
+        List<ModulPartDescription> defaultMPDs = GlobalNames.getDefaultDescriptions();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -25,10 +26,10 @@ namespace ModulManagementSystem
                 Session["CurrentIndex"] = 0;
                 Session["Subjects"] = null;
                 Session["Subjects"] = GetSubjects();
-
-                DrawTable();
+                DropDownList.DataSource = GetModulhandbooks();
                 DropDownList.DataBind();
                 DropDownList.SelectedValue = Request.QueryString["ModulhandbookID"];
+                DrawTable();
                 DrawSubjects();
                 NameTextBox.Text = list[0].Name;
                 DescriptionTextBox.Text = list[0].Description;
@@ -209,44 +210,27 @@ namespace ModulManagementSystem
             }
         }
 
-        private bool CheckDescriptions()
+        public bool CheckDescriptions()
         {
             List<ModulPartDescription> descriptions = GetModulpartDescriptions();
             for (int i = 0; i < descriptions.Count; i++)
             {
-                //Check double ModulPartDescriptions
-                for (int j = i + 1; j < descriptions.Count; j++)
-                {
-                    if (descriptions[i].Name.Equals(descriptions[j].Name))
-                    {
-                        Session["Message"] = true;
-                        CheckforMessage("Es können keine doppelten Modulpunkte akzeptiert werden!");
-                        jumpToDescription(i);
-                        return false;
-                    }
-                }
-                //Check for empty Descriptions
-                if (descriptions[i].Description.Equals("Hier Modulpunktbeschreibung eintragen")
-                    || descriptions[i].Name.Equals("Eigener Modulpunkt"))
-                {
-                    Session["Message"] = true;
-                    CheckforMessage("Ein Modulpunkt wurde noch nicht bearbeitet!");
-                    jumpToDescription(i);
-                    return false;
-                }
                 //Check for undone mandatory fields
                 if (descriptions[i].IsNeeded)
                 {
-                    if (descriptions[i].Description.Equals(""))
+                    if (descriptions[i].Description.Equals(defaultMPDs[i].Description))
                     {
                         Session["Message"] = true;
-                        CheckforMessage("Ein Pflichtfeld darf nicht leer sein");
+                        CheckforMessage("Ein Pflichtfeld muss noch bearbeitet werden");
                         jumpToDescription(i);
                         return false;
                     }
                 }
+
                 //Check for invalide Types
-                if (descriptions[i].Name.Equals("ECTS-Punkte") || descriptions[i].Name.Equals("Semesterwochenstunden"))
+                if (descriptions[i].Name.Equals(GlobalNames.getModulNameECTS())
+                    || descriptions[i].Name.Equals(GlobalNames.getModulNameWeekHours())
+                    || descriptions[i].Name.Equals(GlobalNames.getModulNameEffort()))
                 {
                     double Num;
                     bool isNum = double.TryParse(descriptions[i].Description, out Num);
@@ -259,13 +243,18 @@ namespace ModulManagementSystem
                         return false;
                     }
                 }
+
             }
+            //Check the Subjects
             List<Subject> subjects = GetSubjects();
-            if (subjects.Count <= 0)
+            //At least one Subject must be chosen
+            if (subjects.Count < 1)
             {
                 Session["Message"] = true;
-                CheckforMessage("Es muss mindestens ein Fach für das Modul ausgewählt werden!");
+                CheckforMessage("Sie müssen mindestens ein Fach für das Modul festlegen!");
+                return false;
             }
+
             return true;
         }
 
@@ -367,14 +356,8 @@ namespace ModulManagementSystem
         }
         private List<Subject> GetSubjectsToDisplay()
         {
-            ArchiveLogic al=new ArchiveLogic();
-            ModulhandbookContext mhc=new ModulhandbookContext();
-            String s = DropDownList.SelectedValue.Trim();
-            int id = Int32.Parse(s);
-            List<Modulhandbook> list = mhc.Modulhandbooks.Where(m => m.ModulhandbookID == id).ToList<Modulhandbook>();
-
-            return al.getAllSubjectsFromModulhandbook(list.First().ModulhandbookID);
-
+            ArchiveLogic al = new ArchiveLogic();
+            return al.getSubjectstoDisplay(DropDownList.SelectedValue.Trim());
         }
         private List<Subject> GetSubjects()
         {
@@ -426,6 +409,7 @@ namespace ModulManagementSystem
         protected void AdoptBtn_Click(object sender, EventArgs e)
         {
             SaveChanges(ModulState.created);
+
         }
 
         /// <summary>
@@ -435,7 +419,8 @@ namespace ModulManagementSystem
         /// <param name="e"></param>
         protected void ReleaseBtn_Click(object sender, EventArgs e)
         {
-            SaveChanges(ModulState.freigeben);
+            SaveChanges(ModulState.archiviert);
+
         }
 
         /// <summary>
@@ -445,7 +430,8 @@ namespace ModulManagementSystem
         /// <param name="e"></param>
         protected void ControlBtn_Click(object sender, EventArgs e)
         {
-            SaveChanges(ModulState.waitingForAcceptionFromFreigabeberechtigter);
+            SaveChanges(ModulState.waitingForFreigeber);
+
         }
 
         /// <summary>
@@ -456,6 +442,7 @@ namespace ModulManagementSystem
         protected void SendBackBtn_Click(object sender, EventArgs e)
         {
             SaveChanges(ModulState.abgelehnt);
+
         }
 
         /// <summary>
@@ -512,23 +499,33 @@ namespace ModulManagementSystem
                 }
             }
         }
-        //new stuff
+        
         protected void PdfBtn_Click(object sender, EventArgs e)
         {
+            jumpToDescription(0);
             Core.PDFOperations.PDFHandler pdf = new Core.PDFOperations.PDFHandler();
-
-            int indexOfCurrentModulpunkt = GetCurrentIndex();
             List<ModulPartDescription> list = GetModulpartDescriptions();
-            list[indexOfCurrentModulpunkt].Name = NameTextBox.Text;
-            list[indexOfCurrentModulpunkt].Description = DescriptionTextBox.Text;
-            var mu = System.Web.Security.Membership.GetUser();
-            Guid owner = (Guid)mu.ProviderUserKey;
-            ArchiveLogic al = new ArchiveLogic();
-            JobLogic jl = new JobLogic();
-            List<Subject> subjects = GetSubjects();
-            Modul newModule = al.CreateModul(list, ModulState.created, owner, owner, DateTime.Now, subjects, 1);
+            String title = "";
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].Name.Equals(GlobalNames.getModulNameText()))
+                {
+                    title = list[i].Description;
+                    i = list.Count;
+                }
+            }
+            Modul newModule = new Modul()
+            {
+                Descriptions = list,
+            };
+            pdf.CreatePDF(newModule, title, Server);
 
-            pdf.CreatePDF(newModule, Server);
+        }
+
+        protected ICollection<Modulhandbook> GetModulhandbooks()
+        {
+            ArchiveLogic al = new ArchiveLogic();
+            return al.getEditableModulhandbooks();
         }
     }
 }

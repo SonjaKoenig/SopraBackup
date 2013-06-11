@@ -6,6 +6,10 @@ using System.Web;
 
 namespace ModulManagementSystem.Models
 {
+
+    /// <summary>
+    /// the database model for a Modulhandbook.
+    /// </summary>
     public class Modulhandbook 
     {
         [ScaffoldColumn(false)]

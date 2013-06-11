@@ -17,12 +17,27 @@ Code Review und Tests mit dem Review Excelsheet
 Pflichtenheft stunden eintragen
 
 - admin funktionen:
-	- modul direkt erstellen
+done	- modul direkt erstellen
 	- modul punkte hinzufügen und ändern und löschen
-	-aus rollen eine klasse machen
+done	- aus rollen eine klasse machen
 
 Sopra abnahme: 01.07
 tutor treffen: 17.06
 -admin seite GUI !!
 
 -changelog und versionierung
+
+-Laufzettel und Tagebuch mitnehmen zur Abnahme!
+
+-evenutell bie Profil bearbeiten noch email change und name ändern etc.
+
+- (stellvertreter)
+
+
+Frage: wie erstellt man ein neues Semester, Modulhandbuch, Subject?
+
+zu viele leere kacheln am anfang
+
+Modell ändern? Ein Subject & Modulhandbuch sollten m:n sein?
+
+writeModulToDoc in PDFLogic umschreiben & auch beim Modul benutzen
